@@ -118,3 +118,10 @@ class Vote(models.Model):
 
     def __str__(self):
         return f"{self.owner} voted {self.type.vote_type} on {self.post.title}"
+    
+class Message(models.Model):
+    sender = models.ForeignKey(User, related_name='send', on_delete=models.DO_NOTHING) #
+    receiver = models.ForeignKey(User, related_name='receiver', on_delete=models.DO_NOTHING) #
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)

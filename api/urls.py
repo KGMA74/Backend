@@ -18,9 +18,9 @@ urlpatterns = [
     
     #path('users/', UserList.as_view()), #a modifier
     #path('users/register/', UserRegister.as_view()),
-    path('users/<str:id>/', UserRetrieve.as_view()),
-    path('users/<str:id>/posts/', PostList_byUser),
-    path('users/<str:id>/posts/create/', createPost.as_view()),
+    #path('users/<str:id>/', UserRetrieve.as_view()),
+    #path('users/<str:id>/posts/', PostList_byUser),
+    #path('users/<str:id>/posts/create/', createPost.as_view()),
 
     
     path('posts/', PostList.as_view()),

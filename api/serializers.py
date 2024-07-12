@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import User, Profile, PostCategory, Post, Tag, Vote, VoteType, Comment
+from api.models import User, Profile, PostCategory, Post, Tag, Vote, VoteType, Comment, Message
 #from django.contrib.auth.password_validation import validate_password
 
 """
@@ -67,4 +67,9 @@ class VoteSerializer(serializers.ModelSerializer):
 class VoteTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoteType
+        fields = '__all__'
+        
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
         fields = '__all__'

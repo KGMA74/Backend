@@ -1,3 +1,4 @@
+from django.http.request import HttpRequest
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.conf import settings
 
@@ -5,8 +6,10 @@ class CustomJWTAuthentication(JWTAuthentication):
     """
         Ici on fait juste une surcharge de la fonction authenticate de JWTAuthentication pour recuperer les tokens( access token) au lieu de les recuperer dans les headers
         pour des raisons de securité_
+        
     """
-    def authenticate(self, request):
+    
+    def authenticate(self, request: HttpRequest):
         try:
             header = self.get_header(request)
             

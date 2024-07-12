@@ -1,10 +1,18 @@
 from django.shortcuts import render
 from django.conf import settings
-from api.models import User, Profile, PostCategory, Post, Tag, Vote, VoteType, Comment
-from api.serializers import UserSerializer, ProfileSerializer, PostCategorySerializer, PostSerializer, TagSerializer, VoteSerializer, VoteTypeSerializer, CommentSerializer
+from api.models import (
+    User, Profile, PostCategory, Post, 
+    Tag, Vote, VoteType, Comment,  Message
+)
+from api.serializers import (
+    UserSerializer, ProfileSerializer, 
+    PostCategorySerializer, PostSerializer, 
+    TagSerializer, VoteSerializer, VoteTypeSerializer,
+    CommentSerializer, MessageSerializer
+)
 from rest_framework import generics, status
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import (
@@ -12,6 +20,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView
 )
+
 
 # Create your views here.
 #customisation de la class TokenObtainPairView pour que les tokens passes par les cookies et non les headers donc plus securise
@@ -86,6 +95,7 @@ class CustomTokenVerifyView(TokenVerifyView):
         return super().post(request, *args, **kwargs)
     
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def LogoutView(request):
     if request.method == 'POST':
         response = Response(status=status.HTTP_204_NO_CONTENT)
