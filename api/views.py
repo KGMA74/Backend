@@ -13,7 +13,7 @@ from api.serializers import (
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -131,6 +131,7 @@ class UserRetrieve(generics.RetrieveAPIView):
 class PostList(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [AllowAny]
     
 class PostRetrieve(generics.RetrieveAPIView):
     queryset = Post.objects.all()
@@ -154,18 +155,25 @@ class createPost(generics.CreateAPIView):
 
 #----------------------------------------vote
 @api_view(['GET'])
-def VoteList_byPost(request, post):
+@permission_classes([AllowAny])
+def VoteList_byPost(request, postId, vote_type="-1"):
+    # -1 mean all_type for us both upvote
     if request.method == 'GET':
-        votes = Vote.objects.filter(post=post)
-        serializer = VoteSerializer(votes, many=True)
+        votes = Vote.objects.filter(post=postId)
+        upvotes = votes.filter(type=1).count()
+        downvotes = votes.filter(type=2).count()
         
-        return Response(data=serializer.data,
+        if vote_type != "-1":
+            votes = votes.filter(type=vote_type)
+        
+        return Response(data={'upvotes': upvotes, 'downvotes': downvotes},
                         status=status.HTTP_202_ACCEPTED
                     )
     return Response("", status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def VoteList_byVoteType(request, vote_type):
     if request.method == 'GET':
         votes = Vote.objects.filter(type=vote_type)
@@ -179,17 +187,54 @@ def VoteList_byVoteType(request, vote_type):
 class VoteList(generics.ListAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
+    permission_classes = [AllowAny]
     
 class VoteTypeRetrieve(generics.RetrieveAPIView):
     queryset = VoteType.objects.all()
     serializer_class = VoteTypeSerializer
     lookup_field = 'id'
+    permission_classes = [AllowAny]
     
 class vote(generics.CreateAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
-
+    permission_classes = [AllowAny]
+    
+class updateVote(generics.UpdateAPIView):
+    queryset = Vote.objects.all()
+    serializer_class = VoteSerializer
+    lookup_field = 'id'
+    permission_classes = [AllowAny]
+    
 class unvote(generics.DestroyAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
     lookup_field = 'id'
+    permission_classes = [AllowAny]
+    
+#-----------------*--les commentaires
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def comments_by_post(request, postId):
+    if request.method == 'GET':
+        try:
+            comments = Comment.objects.filter(post=postId)
+            serializer = CommentSerializer(comments, many=True)
+        except Exception as e:
+            return Response("{e}", status=status.HTTP_404_NOT_FOUND)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+# -------------------les tags
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def tags_by_post(request, postId):
+    if request.method == 'GET':
+        try:
+            tags = Post.objects.get(id=postId).tags.all()
+            serialier = TagSerializer(tags, many=True)
+        except Exception as e:
+            return Response(f"{e}", status=status.HTTP_404_NOT_FOUND)
+        return Response(data=serialier.data, status=status.HTTP_200_OK)
+    
+    return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)

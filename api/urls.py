@@ -1,12 +1,15 @@
 from django.urls import path
 import djoser.email
-from api.views import (UserList, PostList, VoteList, VoteList_byVoteType, VoteList_byPost,
+from api.views import (
+    UserList, PostList, VoteList, 
+    VoteList_byVoteType, VoteList_byPost, tags_by_post, comments_by_post,
     VoteTypeRetrieve, UserRetrieve, 
-    PostList_byUser, createPost, vote, unvote,
+    PostList_byUser, createPost, vote, unvote, updateVote,
+    
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
     CustomTokenVerifyView,
-    LogoutView
+    LogoutView,
     )
 
 urlpatterns = [
@@ -24,14 +27,19 @@ urlpatterns = [
 
     
     path('posts/', PostList.as_view()),
-    path('posts/<str:post>/votes/', VoteList_byPost),
+    path('posts/<str:postId>/votes/<str:vote_type>/', VoteList_byPost), #a change
     path('posts/create/', createPost.as_view()),
+    path('posts/<str:postId>/tags/', tags_by_post),
+    path('posts/<str:postId>/comments/', comments_by_post),
     
     path('votes/', VoteList.as_view()),
     path('votes/<str:vote_type>/', VoteList_byVoteType),
     path('vote/', vote.as_view()),
     path('unvote/<str:id>/', unvote.as_view()),
+    path('vote/<str:id>/', updateVote.as_view()),
     
     
-    path('vote-type/<str:id>/', VoteTypeRetrieve.as_view())
+    path('vote-type/<str:id>/', VoteTypeRetrieve.as_view()),
+    
+   
 ]
