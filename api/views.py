@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.conf import settings
+from django.db.models import Q
 from api.models import (
     User, Profile, PostCategory, Post, 
     Tag, Vote, VoteType, Comment,  Message
@@ -15,24 +16,53 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
+from djoser.social.views import ProviderAuthView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
     TokenVerifyView
 )
+from django.contrib.auth import login
 
+# Create your views here..
+class CustomProviderAuthView(ProviderAuthView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
 
-# Create your views here.
+        if response.status_code == 201:
+            access_token = response.data.get('access')
+            refresh_token = response.data.get('refresh')
+
+            response.set_cookie(
+                'access',
+                access_token,
+                max_age=settings.AUTH_COOKIE_MAX_AGE,
+                path=settings.AUTH_COOKIE_PATH,
+                secure=settings.AUTH_COOKIE_SECURE,
+                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
+                samesite=settings.AUTH_COOKIE_SAMESITE
+            )
+            response.set_cookie(
+                'refresh',
+                refresh_token,
+                max_age=settings.AUTH_COOKIE_MAX_AGE,
+                path=settings.AUTH_COOKIE_PATH,
+                secure=settings.AUTH_COOKIE_SECURE,
+                httponly=settings.AUTH_COOKIE_HTTP_ONLY,
+                samesite=settings.AUTH_COOKIE_SAMESITE
+            )
+
+        return response
 #customisation de la class TokenObtainPairView pour que les tokens passes par les cookies et non les headers donc plus securise
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        
+        print(response)
         if response.status_code == 200:
             access_token = response.data.get('access')
             refresh_token = response.data.get('refresh')
             
-            
+        
         #un cookie pour le access token
         response.set_cookie(
             'access',
@@ -95,7 +125,7 @@ class CustomTokenVerifyView(TokenVerifyView):
         return super().post(request, *args, **kwargs)
     
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def LogoutView(request):
     if request.method == 'POST':
         response = Response(status=status.HTTP_204_NO_CONTENT)
@@ -212,6 +242,20 @@ class unvote(generics.DestroyAPIView):
     lookup_field = 'id'
     permission_classes = [AllowAny]
     
+#le vote d'un utilisareur dans un post
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def vote_of_user_in_post(request, postId, userId):
+    if request.method == 'GET':
+        try:
+            vote = Vote.objects.get(owner=userId, post=postId)
+            serializer = VoteSerializer(vote, many=False)
+            print(":::::",vote)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(f"{e}", status=status.HTTP_404_NOT_FOUND)
+    return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
 #-----------------*--les commentaires
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -220,9 +264,9 @@ def comments_by_post(request, postId):
         try:
             comments = Comment.objects.filter(post=postId)
             serializer = CommentSerializer(comments, many=True)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response("{e}", status=status.HTTP_404_NOT_FOUND)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+            return Response(f"{e}", status=status.HTTP_404_NOT_FOUND)
     return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
 # -------------------les tags

@@ -2,7 +2,7 @@ from django.urls import path
 import djoser.email
 from api.views import (
     UserList, PostList, VoteList, 
-    VoteList_byVoteType, VoteList_byPost, tags_by_post, comments_by_post,
+    VoteList_byVoteType, VoteList_byPost, tags_by_post, comments_by_post, vote_of_user_in_post,
     VoteTypeRetrieve, UserRetrieve, 
     PostList_byUser, createPost, vote, unvote, updateVote,
     
@@ -31,12 +31,13 @@ urlpatterns = [
     path('posts/create/', createPost.as_view()),
     path('posts/<str:postId>/tags/', tags_by_post),
     path('posts/<str:postId>/comments/', comments_by_post),
+    path('posts/<str:postId>/user/<str:userId>/vote/', vote_of_user_in_post),
     
     path('votes/', VoteList.as_view()),
     path('votes/<str:vote_type>/', VoteList_byVoteType),
     path('vote/', vote.as_view()),
     path('unvote/<str:id>/', unvote.as_view()),
-    path('vote/<str:id>/', updateVote.as_view()),
+    path('update-vote/<str:id>/', updateVote.as_view()),
     
     
     path('vote-type/<str:id>/', VoteTypeRetrieve.as_view()),
