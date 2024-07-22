@@ -22,7 +22,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView
 )
-from django.contrib.auth import login
+from django.contrib.auth import login 
 
 # Create your views here..
 class CustomProviderAuthView(ProviderAuthView):
@@ -123,6 +123,8 @@ class CustomTokenVerifyView(TokenVerifyView):
             request.data['token'] = access_token
             
         return super().post(request, *args, **kwargs)
+    
+
     
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -282,3 +284,4 @@ def tags_by_post(request, postId):
         return Response(data=serialier.data, status=status.HTTP_200_OK)
     
     return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+

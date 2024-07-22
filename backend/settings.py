@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
-    'sendgrid',
     'djoser', # a third party application for managing jwt tockens
 ]
 
@@ -165,7 +164,7 @@ AUTH_COOKIE_REFRESH_MAX_AGE = 60 * 60 * 24 #1jour
 AUTH_COOKIE_SECURE = getenv('AUTH_COOKIE_SECURE', 'True') == 'True'
 AUTH_COOKIE_HTTP_ONLY = True
 AUTH_COOKIE_PATH = '/'
-AUTH_COOKIE_SAMESITE = 'Lax'
+AUTH_COOKIE_SAMESITE = 'None'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -178,7 +177,7 @@ REST_FRAMEWORK = {
 
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': not True,
+    'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'activation/{uid}/{token}',
     'USER_CREATE_PASSWORD_RETYPE': True,  # Pour demander la confirmation du mot de passe à la création de l'utilisateur
     'PASSWORD_RESET_CONFIRM_RETYPE': True,  # Pour demander la confirmation du nouveau mot de passe à la réinitialisation
@@ -227,6 +226,17 @@ SIMPLE_JWT = {
 }
 
 #email.setting 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'esioverflow@gmail.com'
+EMAIL_HOST_USER = 'esioverflow@gmail.com'
+EMAIL_HOST_PASSWORD = 'ESIOverflow@2024'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+PASSWORD_RESET_TIMEOUT = 14400
+
 """
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = "Votre_API_Key_SendGrid"
@@ -252,5 +262,5 @@ AUTH_USER_MODEL = 'api.User' #cuz we use custom user
 
 SITE_NAME = 'EsiOverflow'
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
-#CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+#CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
