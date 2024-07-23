@@ -231,7 +231,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_FROM = 'esioverflow@gmail.com'
 EMAIL_HOST_USER = 'esioverflow@gmail.com'
-EMAIL_HOST_PASSWORD = 'ESIOverflow@2024'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
