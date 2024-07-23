@@ -228,35 +228,14 @@ SIMPLE_JWT = {
 #email.setting 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_FROM = 'esioverflow@gmail.com'
-EMAIL_HOST_USER = 'esioverflow@gmail.com'
-EMAIL_HOST_PASSWORD = 'ESIOverflow@2024'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
+EMAIL_HOST = getenv('EMAIL_HOST')
+EMAIL_FROM = getenv('EMAIL_FROM')
+EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = int(getenv('EMAIL_PORT'))
+EMAIL_USE_TLS = getenv('EMAIL_USE_TLS', 'True') == 'True'
 PASSWORD_RESET_TIMEOUT = 14400
 
-"""
-EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-SENDGRID_API_KEY = "Votre_API_Key_SendGrid"
-SENDGRID_SANDBOX_MODE_IN_DEBUG = False
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-DEFAULT_FROM_EMAIL = 'votre_adresse_email@example.com'
-"""
-
-"""# email settings
-EMAIL_BACKEND = 'django_ses.SESBackend'
-AWS_SES_ACCESS_KEY_ID = ''
-AWS_SES_SECRET_ACCESS_KEY = ''
-AWS_SES_REGION_NAME = ''
-AWS_SES_REGION_ENDPOINT = 'email.us-west-2.amazonaws.com'
-AWS_SES_FROM_EMAIL = getenv('AWS_SES_FROM_EMAIL')
-USE_SES_V2 = True"""
 
 AUTH_USER_MODEL = 'api.User' #cuz we use custom user
 
