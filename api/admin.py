@@ -18,7 +18,7 @@ admin.site.register([
     Profile, 
     PostCategory, 
     Post, 
-    Comment, 
+    Comment, #
     Tag, 
     Vote, 
     VoteType,

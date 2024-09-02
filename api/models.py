@@ -18,6 +18,10 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 # create relation post_tag 
 # create relation post_post_category :::::::::Ok
 # create relation vote_vote_type :::::::::Ok
+# creationd de la relation followers_following
+# ##
+
+
 
 # Custom user manager
 from django.db import models
@@ -29,7 +33,7 @@ from api.manager import UserManager
 class User(AbstractBaseUser):
     email = models.EmailField(verbose_name='email address', max_length=255, unique=True)
     nickname = models.CharField(max_length=50, unique=True)
-    #la definition du chalmp password n'est pas necessair car fait par defaut
+    #la definition du champ password n'est pas necessaire car faite par defaut par django
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     
@@ -40,7 +44,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['nickname'] #USERNAME_FIELDet password sont requs pardefaut
+    REQUIRED_FIELDS = ['nickname'] #USERNAME_FIELD et password sont requs pardefaut
 
     def __str__(self):
         return self.email
@@ -50,47 +54,68 @@ class User(AbstractBaseUser):
     
     def has_perm(self, perm, obj=None):
         return True
-
+'''
 class Profile(models.Model):
+    # utiliser le id de user comme clef primaire [to do]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+
+    #ajout recent
+    #follow = models.ManyToManyField(self, on_delete=models.CASCADE, related_name='followers_followings')#
+    confirmed = models.BooleanField(default=False)
+    reputation = models.FloatField(default=0) 
+
     bio = models.TextField(blank=True, null=True)
     photo = models.ImageField(upload_to='profiles/', blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.user.nickname
+'''
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
+    
+    follow = models.ManyToManyField('self', symmetrical=False, related_name='followers_followings', blank=True) # symetrical a false car A suit B n implique pas B suit A
+    confirmed = models.BooleanField(default=False)
+    reputation = models.IntegerField(default=0)
 
-class PostCategory(models.Model):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
+    bio = models.TextField(blank=True, null=True)
+    photo = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    updated = models.DateTimeField(auto_now=True)
 
 class Tag(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True, null=True)
-
+    name = models.CharField(max_length=255, primary_key=True)
+    description = models.TextField()
+    
     def __str__(self):
         return self.name
+
+class PostCategory(models.Model):
+    name = models.CharField(max_length=255, primary_key=True)
+    description = models.TextField()
     
 class Post(models.Model):
-    owner = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
+    parent_post = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='comments') # si non null => cest un commentaire
     category = models.ForeignKey(PostCategory, related_name='posts', on_delete=models.CASCADE)
-    tags = models.ManyToManyField(Tag, related_name='posts')
+    tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
     
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, blank=True, null=True)
     details = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return self.title
-
     
+    def is_comment(self):
+        return self.parent_post is not None
+
+#a supprimer  ----------------------------------------------------------------  
 class Comment(models.Model):
-    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE) #
-    owner = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE) #
+    post = models.ForeignKey(Post, related_name='comment', on_delete=models.CASCADE) #
+    author = models.ForeignKey(User, related_name='comment', on_delete=models.CASCADE) #
     
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
@@ -98,26 +123,28 @@ class Comment(models.Model):
     
     def __str__(self):
         return self.content[:50]
+    
+
        
 class VoteType(models.Model):
-    vote_type = models.CharField(max_length=50) #upvote | downvote |
+    vote_type = models.CharField(max_length=50, primary_key=True) #upvote | downvote |
 
     def __str__(self):
         return self.vote_type
 
 class Vote(models.Model):
-    owner = models.ForeignKey(User, related_name='votes', on_delete=models.CASCADE) #
-    post = models.ForeignKey(Post, related_name='votes', on_delete=models.CASCADE) #
-    type = models.ForeignKey(VoteType, related_name='votes', on_delete=models.CASCADE) #
+    author = models.ForeignKey(User, related_name='vote_author', on_delete=models.CASCADE) #
+    post = models.ForeignKey(Post, related_name='vote_post', on_delete=models.CASCADE) #
+    type = models.ForeignKey(VoteType, related_name='votes_type', on_delete=models.CASCADE) #
 
     class Meta:
-        #ajout d'une contraine unique car un user ne pouvant faire qu'un suele vote./
+        #ajout d'une contraine unique car un user ne pouvant faire qu'un seul vote./
         constraints = [
-            models.UniqueConstraint(fields=['owner', 'post'], name='unique_user_post_vote')
+            models.UniqueConstraint(fields=['author', 'post'], name='unique_user_post_vote')
         ]
 
     def __str__(self):
-        return f"{self.owner} voted {self.type.vote_type} on {self.post.title}"
+        return f"{self.author} voted {self.type.vote_type} on {self.post.title}"
     
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='send', on_delete=models.DO_NOTHING) #
@@ -125,3 +152,10 @@ class Message(models.Model):
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    
+
+class Image(models.Model):
+    author = models.ForeignKey(User, related_name='image', on_delete=models.CASCADE) #
+    post = models.ForeignKey(Post, related_name='votes', on_delete=models.CASCADE) #
+        
+    url = models.ImageField(upload_to='Images/', blank=True, null=True)

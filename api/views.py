@@ -22,6 +22,12 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView
 )
+
+from .utils import (
+    Post_votes_nbr,
+    count_total_comments
+)
+
 from django.contrib.auth import login 
 
 # Create your views here..
@@ -159,9 +165,11 @@ class UserRetrieve(generics.RetrieveAPIView):
     
 #[!] ----------------------------plusnecessaire
     
-#class Post
 class PostList(generics.ListAPIView):
-    queryset = Post.objects.all()
+    """
+    Vue pour lister tous les posts principaux (excluant les commentaires).
+    """
+    queryset = Post.objects.filter(~Q(category='comment'))  # Exclure les commentaires
     serializer_class = PostSerializer
     permission_classes = [AllowAny]
     
@@ -173,7 +181,7 @@ class PostRetrieve(generics.RetrieveAPIView):
 @api_view(['GET'])
 def PostList_byUser(request, id):
     if request.method == 'GET':
-        votes = Post.objects.filter(owner=id)
+        votes = Post.objects.filter(author=id)
         serializer = PostSerializer(votes, many=True)
         
         return Response(data=serializer.data,
@@ -188,14 +196,14 @@ class createPost(generics.CreateAPIView):
 #----------------------------------------vote
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def VoteList_byPost(request, postId, vote_type="-1"):
-    # -1 mean all_type for us both upvote
+def VoteList_byPost(request, postId, vote_type="all"):
+    # all for  both upvote and downvote
     if request.method == 'GET':
-        votes = Vote.objects.filter(post=postId)
-        upvotes = votes.filter(type=1).count()
-        downvotes = votes.filter(type=2).count()
         
-        if vote_type != "-1":
+        upvotes, downvotes =  Post_votes_nbr(postId)
+
+        #useless
+        if vote_type != "all":
             votes = votes.filter(type=vote_type)
         
         return Response(data={'upvotes': upvotes, 'downvotes': downvotes},
@@ -250,10 +258,22 @@ class unvote(generics.DestroyAPIView):
 def vote_of_user_in_post(request, postId, userId):
     if request.method == 'GET':
         try:
-            vote = Vote.objects.get(owner=userId, post=postId)
+            vote = Vote.objects.get(author=userId, post=postId)
             serializer = VoteSerializer(vote, many=False)
             print(":::::",vote)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(f"{e}", status=status.HTTP_404_NOT_FOUND)
+    return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+#commentaire d un post (qui son egalement des post de categories commentaire)
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def comments_by_post_number(request, postId):
+    #nombre de commentaire dun post
+    if request.method == 'GET':
+        try:
+            return Response(data={'totalComments': count_total_comments(post_id=postId)}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(f"{e}", status=status.HTTP_404_NOT_FOUND)
     return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -285,3 +305,12 @@ def tags_by_post(request, postId):
     
     return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+
+
+class SearchUserView(APIView):
+    def get(self, request):
+        search_term = request.query_params.get('search')
+        matches = User.objects.filter(
+            Q(nickname_icontains=search_term) |
+            Q(email_icontains=search_term)
+        ).distinct()
