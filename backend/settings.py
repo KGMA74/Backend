@@ -103,8 +103,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'esioverflow',
-        'USER': 'postgres',
-        'PASSWORD': '7488',
+        'USER': 'hackers',
+        'PASSWORD': 'arnoldbily',
         'HOST': 'localhost',  # ou l'adresse de votre serveur PostgreSQL
         'PORT': '5432',           # par défaut, le port est 5432
     }
@@ -241,5 +241,6 @@ AUTH_USER_MODEL = 'api.User' #cuz we use custom user
 
 SITE_NAME = 'EsiOverflow'
 CORS_ALLOW_CREDENTIALS = True
+DOMAIN = getenv("DOMAIN")
 #CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
