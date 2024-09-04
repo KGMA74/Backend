@@ -94,6 +94,9 @@ class Tag(models.Model):
 class PostCategory(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
     description = models.TextField()
+
+    def __str__(self):
+        return self.name
     
 class Post(models.Model):
     author = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)

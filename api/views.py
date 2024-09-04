@@ -169,7 +169,7 @@ class PostList(generics.ListAPIView):
     """
     Vue pour lister tous les posts principaux (excluant les commentaires).
     """
-    queryset = Post.objects.filter(~Q(category='comment'))  # Exclure les commentaires
+    queryset = Post.objects.filter(~Q(category='Comment'))  # Exclure les commentaires
     serializer_class = PostSerializer
     permission_classes = [AllowAny]
     
@@ -292,9 +292,17 @@ def comments_by_post(request, postId):
     return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
 # -------------------les tags
+class tagsList(generics.ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = [AllowAny]
+
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def tags_by_post(request, postId):
+    #recuperer les tags dun post des donnes
     if request.method == 'GET':
         try:
             tags = Post.objects.get(id=postId).tags.all()
@@ -305,8 +313,13 @@ def tags_by_post(request, postId):
     
     return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+#categories de post
+class categoriesList(generics.ListAPIView):
+    queryset = PostCategory.objects.all()
+    serializer_class = PostCategorySerializer
+    permission_classes = [AllowAny]
 
-
+@api_view(['GET'])
 class SearchUserView(APIView):
     def get(self, request):
         search_term = request.query_params.get('search')

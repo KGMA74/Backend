@@ -102,11 +102,11 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'esioverflow',
-        'USER': 'postgres',
-        'PASSWORD': '7488',
-        'HOST': 'localhost',  # ou l'adresse de votre serveur PostgreSQL
-        'PORT': '5432',           # par défaut, le port est 5432
+        'NAME': getenv('DB_NAME'),
+        'USER': getenv('DB_USER'),
+        'PASSWORD': getenv('DB_PASSWORD'),
+        'HOST': getenv('DB_HOST', default='localhost'),  # ou l'adresse de votre serveur PostgreSQL
+        'PORT': getenv('DB_HOST', default='5432'),           # par défaut, le port est 5432
     }
 }
 

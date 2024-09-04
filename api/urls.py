@@ -3,7 +3,7 @@ import djoser.email
 from api.views import (
     UserList, PostList, VoteList, 
     VoteList_byVoteType, VoteList_byPost, tags_by_post, comments_by_post, comments_by_post_number,
-    vote_of_user_in_post,
+    vote_of_user_in_post, tagsList, categoriesList,
     VoteTypeRetrieve, UserRetrieve, 
     PostList_byUser, createPost, vote, unvote, updateVote,
     
@@ -43,6 +43,9 @@ urlpatterns = [
     
     
     path('vote-type/<str:id>/', VoteTypeRetrieve.as_view()),
+
+    path('tags/', tagsList.as_view()), #recuperer la liste des tags
+    path('categories/', categoriesList.as_view()), #recuperer la liste des categories
     
    
 ]
