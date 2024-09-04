@@ -240,6 +240,7 @@ PASSWORD_RESET_TIMEOUT = 14400
 AUTH_USER_MODEL = 'api.User' #cuz we use custom user
 
 SITE_NAME = 'EsiOverflow'
+DOMAIN = getenv('DOMAIN')
 CORS_ALLOW_CREDENTIALS = True
 #CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')

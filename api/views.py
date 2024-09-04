@@ -3,13 +3,13 @@ from django.conf import settings
 from django.db.models import Q
 from api.models import (
     User, Profile, PostCategory, Post, 
-    Tag, Vote, VoteType, Comment,  Message
+    Tag, Vote, VoteType, Message
 )
 from api.serializers import (
     UserSerializer, ProfileSerializer, 
     PostCategorySerializer, PostSerializer, 
     TagSerializer, VoteSerializer, VoteTypeSerializer,
-    CommentSerializer, MessageSerializer
+    MessageSerializer
 )
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -266,7 +266,7 @@ def vote_of_user_in_post(request, postId, userId):
             return Response(f"{e}", status=status.HTTP_404_NOT_FOUND)
     return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-#commentaire d un post (qui son egalement des post de categories commentaire)
+#nombre de commentaire d un post (qui son egalement des post de categories commentaire)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def comments_by_post_number(request, postId):
@@ -284,8 +284,8 @@ def comments_by_post_number(request, postId):
 def comments_by_post(request, postId):
     if request.method == 'GET':
         try:
-            comments = Comment.objects.filter(post=postId)
-            serializer = CommentSerializer(comments, many=True)
+            comments = Post.objects.filter(parent_post_id=postId)
+            serializer = PostSerializer(comments, many=True)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(f"{e}", status=status.HTTP_404_NOT_FOUND)

@@ -32,7 +32,7 @@ urlpatterns = [
     path('posts/create/', createPost.as_view()),
     path('posts/<str:postId>/tags/', tags_by_post),
     path('posts/<str:postId>/comments_number/', comments_by_post_number),
-    path('posts/<str:postId>/comments_number/', comments_by_post),
+    path('posts/<str:postId>/comments/', comments_by_post),
     path('posts/<str:postId>/user/<str:userId>/vote/', vote_of_user_in_post),
     
     path('votes/', VoteList.as_view()),

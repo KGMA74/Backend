@@ -112,19 +112,6 @@ class Post(models.Model):
     def is_comment(self):
         return self.parent_post is not None
 
-#a supprimer  ----------------------------------------------------------------  
-class Comment(models.Model):
-    post = models.ForeignKey(Post, related_name='comment', on_delete=models.CASCADE) #
-    author = models.ForeignKey(User, related_name='comment', on_delete=models.CASCADE) #
-    
-    content = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return self.content[:50]
-    
-
        
 class VoteType(models.Model):
     vote_type = models.CharField(max_length=50, primary_key=True) #upvote | downvote |
