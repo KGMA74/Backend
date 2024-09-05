@@ -31,6 +31,7 @@ asyauth==0.0.20
 async-timeout==4.0.3
 asysocks==0.2.12
 attrs==23.2.0
+autobahn==24.4.2
 autocommand==2.2.2
 Automat==24.8.1
 Babel==2.14.0
@@ -53,6 +54,7 @@ censys==2.2.13
 certifi==2024.6.2
 certipy-ad==4.8.2
 cfgv==3.4.0
+channels==4.1.0
 chardet==5.2.0
 charset-normalizer==3.3.2
 cheroot==10.0.0+ds1
@@ -74,6 +76,7 @@ cssselect==1.2.0
 cupshelpers==1.0
 cycler==0.12.1
 cytoolz==0.12.3
+daphne==4.1.2
 dbus-python==1.3.2
 debugpy==1.8.1
 decorator==5.1.1
@@ -422,6 +425,7 @@ trie==3.0.1
 trove-classifiers==2024.4.10
 ttystatus==0.38
 Twisted==24.3.0
+txaio==23.1.1
 typeguard==4.3.0
 types-aiofiles==23.2
 types-aws-xray-sdk==2.12

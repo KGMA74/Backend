@@ -90,6 +90,9 @@ class Tag(models.Model):
     
     def __str__(self):
         return self.name
+    
+    def count_posts(self):
+        return self.posts.count()
 
 class PostCategory(models.Model):
     name = models.CharField(max_length=255, primary_key=True)

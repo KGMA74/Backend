@@ -260,7 +260,6 @@ def vote_of_user_in_post(request, postId, userId):
         try:
             vote = Vote.objects.get(author=userId, post=postId)
             serializer = VoteSerializer(vote, many=False)
-            print(":::::",vote)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(f"{e}", status=status.HTTP_404_NOT_FOUND)
