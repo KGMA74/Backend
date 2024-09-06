@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
-    'daphn'
     'djoser', # a third party application for managing jwt tockens
 ]
 
@@ -160,7 +159,7 @@ MEDIA_ROOT = BASE_DIR / MEDIA_URL[:-1]
 
 #----------------------
 AUTH_COOKIE = 'access'
-AUTH_COOKIE_ACCESS_MAX_AGE = 60 * 1 #5mn
+AUTH_COOKIE_ACCESS_MAX_AGE = 60 * 5 #5mn
 AUTH_COOKIE_REFRESH_MAX_AGE = 60 * 60 * 24 #1jour
 AUTH_COOKIE_SECURE = getenv('AUTH_COOKIE_SECURE', 'True') == 'True'
 AUTH_COOKIE_HTTP_ONLY = True

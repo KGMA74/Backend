@@ -5,7 +5,7 @@ from api.views import (
     VoteList_byVoteType, VoteList_byPost, tags_by_post, comments_by_post, comments_by_post_number,
     vote_of_user_in_post, tagsList, categoriesList,
     VoteTypeRetrieve, UserRetrieve, 
-    PostList_byUser, createPost, vote, unvote, updateVote,
+    PostList_byUser, createPost, vote, unvote, updateVote, search,
     
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
@@ -47,5 +47,5 @@ urlpatterns = [
     path('tags/', tagsList.as_view()), #recuperer la liste des tags
     path('categories/', categoriesList.as_view()), #recuperer la liste des categories
     
-   
+    path('search/', search)
 ]

@@ -319,10 +319,27 @@ class categoriesList(generics.ListAPIView):
     permission_classes = [AllowAny]
 
 @api_view(['GET'])
-class SearchUserView(APIView):
-    def get(self, request):
-        search_term = request.query_params.get('search')
-        matches = User.objects.filter(
-            Q(nickname_icontains=search_term) |
-            Q(email_icontains=search_term)
-        ).distinct()
+@permission_classes([AllowAny])
+def search(request):
+    query = request.GET.get('q', '')  # Récupère la requête depuis le frontend
+    
+    if query:
+        # Rechercher dans les utilisateurs
+        users = User.objects.filter(Q(nickname__icontains=query) | Q(email__icontains=query))
+        user_serializer = UserSerializer(users, many=True)
+
+        # Rechercher dans les tags
+        tags = Tag.objects.filter(name__icontains=query)
+        tag_serializer = TagSerializer(tags, many=True)
+
+        # Rechercher dans les posts
+        posts = Post.objects.filter(Q(title__icontains=query) | Q(details__icontains=query))
+        post_serializer = PostSerializer(posts, many=True)
+
+        return Response({
+            'users': user_serializer.data,
+            'tags': tag_serializer.data,
+            'posts': post_serializer.data,
+        })
+    
+    return Response({'error': 'No query provided'}, status=400)
