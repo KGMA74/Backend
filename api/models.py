@@ -1,5 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.conf import settings
 
 # ----------------------Todo
 #:::::::::Ok
@@ -76,13 +79,16 @@ class Profile(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
     
-    follow = models.ManyToManyField('self', symmetrical=False, related_name='followers_followings', blank=True) # symetrical a false car A suit B n implique pas B suit A
+    following = models.ManyToManyField('self', symmetrical=False, related_name='follower', blank=True) # symetrical a false car A suit B n implique pas B suit A
     confirmed = models.BooleanField(default=False)
     reputation = models.IntegerField(default=0)
 
     bio = models.TextField(blank=True, null=True)
     photo = models.ImageField(upload_to='profiles/', blank=True, null=True)
     updated = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f'{self.user}'
 
 class Tag(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
@@ -152,3 +158,11 @@ class Image(models.Model):
     post = models.ForeignKey(Post, related_name='votes', on_delete=models.CASCADE) #
         
     url = models.ImageField(upload_to='Images/', blank=True, null=True)
+    
+
+
+#pour la creation d un profile auto associe un new user
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
