@@ -28,6 +28,7 @@ urlpatterns = [
 
     
     path('posts/', PostList.as_view()),
+    path('user-posts/<str:id>/', PostList_byUser),
     path('posts/<str:postId>/votes/<str:vote_type>/', VoteList_byPost), #a change
     path('posts/create/', createPost.as_view()),
     path('posts/<str:postId>/tags/', tags_by_post),

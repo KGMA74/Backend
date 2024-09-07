@@ -106,6 +106,7 @@ class CustomTokenRefreshView(TokenRefreshView):
         
         if response.status_code == 200:
             access_token = response.data.get('access')
+            print("Access token:", access_token)
             
             #on met a jour le access token
             response.set_cookie(
@@ -136,15 +137,34 @@ class CustomTokenVerifyView(TokenVerifyView):
 @permission_classes([AllowAny])
 def LogoutView(request):
     if request.method == 'POST':
+        
+        # Supprimer les token en mettant leur valeur des cookies a ''
         response = Response(status=status.HTTP_204_NO_CONTENT)
         
-        #on supprime les cookies access et refresh
-        response.delete_cookie('access')
-        response.delete_cookie('refresh') 
+        response.set_cookie(
+            'refresh',
+            value='',
+            max_age=0,
+            secure=settings.AUTH_COOKIE_SECURE,
+            httponly=settings.AUTH_COOKIE_HTTP_ONLY,
+            path=settings.AUTH_COOKIE_PATH,
+            samesite=settings.AUTH_COOKIE_SAMESITE
+        )
         
+        response.set_cookie(
+            'access',
+            value='',
+            max_age=0,
+            secure=settings.AUTH_COOKIE_SECURE,
+            httponly=settings.AUTH_COOKIE_HTTP_ONLY,
+            path=settings.AUTH_COOKIE_PATH,
+            samesite=settings.AUTH_COOKIE_SAMESITE
+        )
+
         return response
-     
-    return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)    
+    
+    return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+       
     
 #user management
 #[!] -----------------------------plus necessaire
@@ -181,7 +201,7 @@ class PostRetrieve(generics.RetrieveAPIView):
 @api_view(['GET'])
 def PostList_byUser(request, id):
     if request.method == 'GET':
-        votes = Post.objects.filter(author=id)
+        votes = Post.objects.filter(Q(author=id) & ~Q(category='Comment'))
         serializer = PostSerializer(votes, many=True)
         
         return Response(data=serializer.data,

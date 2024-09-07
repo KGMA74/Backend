@@ -159,7 +159,7 @@ MEDIA_ROOT = BASE_DIR / MEDIA_URL[:-1]
 
 #----------------------
 AUTH_COOKIE = 'access'
-AUTH_COOKIE_ACCESS_MAX_AGE = 60 * 5 #5mn
+AUTH_COOKIE_ACCESS_MAX_AGE = 60 * 5 #10mn
 AUTH_COOKIE_REFRESH_MAX_AGE = 60 * 60 * 24 #1jour
 AUTH_COOKIE_SECURE = getenv('AUTH_COOKIE_SECURE', 'True') == 'True'
 AUTH_COOKIE_HTTP_ONLY = True
@@ -195,7 +195,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 
     # Mise à jour du dernier login
-    "UPDATE_LAST_LOGIN": False,
+    "UPDATE_LAST_LOGIN": True,
 
     # Clés et algorithmes
     "ALGORITHM": "HS256",
