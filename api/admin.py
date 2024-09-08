@@ -1,8 +1,7 @@
 from django.contrib import admin
 from api.models import (
     User, Profile, PostCategory, 
-    Post, Tag, Vote, VoteType,
-    Message
+    Post, Tag, Vote, VoteType
 )
 
 # Register your models here.
@@ -21,5 +20,4 @@ admin.site.register([
     Tag, 
     Vote, 
     VoteType,
-    Message
 ])

@@ -3,16 +3,14 @@ from django.conf import settings
 from django.db.models import Q
 from api.models import (
     User, Profile, PostCategory, Post, 
-    Tag, Vote, VoteType, Message
+    Tag, Vote, VoteType
 )
 from api.serializers import (
     UserSerializer, ProfileSerializer, 
     PostCategorySerializer, PostSerializer, 
-    TagSerializer, VoteSerializer, VoteTypeSerializer,
-    MessageSerializer
+    TagSerializer, VoteSerializer, VoteTypeSerializer
 )
 from rest_framework import generics, status
-from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import User, Profile, PostCategory, Post, Tag, Vote, VoteType, Message
+from api.models import User, Profile, PostCategory, Post, Tag, Vote, VoteType
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,9 +34,4 @@ class VoteSerializer(serializers.ModelSerializer):
 class VoteTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoteType
-        fields = '__all__'
-        
-class MessageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Message
         fields = '__all__'

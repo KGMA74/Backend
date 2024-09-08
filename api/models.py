@@ -119,7 +119,7 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return self.title
+        return self.title or ''
     
     def is_comment(self):
         return self.parent_post is not None
@@ -144,13 +144,6 @@ class Vote(models.Model):
 
     def __str__(self):
         return f"{self.author} voted {self.type.vote_type} on {self.post.title}"
-    
-class Message(models.Model):
-    sender = models.ForeignKey(User, related_name='send', on_delete=models.DO_NOTHING) #
-    receiver = models.ForeignKey(User, related_name='receiver', on_delete=models.DO_NOTHING) #
-    body = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
     
 
 class Image(models.Model):
