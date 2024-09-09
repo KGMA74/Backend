@@ -57,24 +57,7 @@ class User(AbstractBaseUser):
     
     def has_perm(self, perm, obj=None):
         return True
-'''
-class Profile(models.Model):
-    # utiliser le id de user comme clef primaire [to do]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-
-    #ajout recent
-    #follow = models.ManyToManyField(self, on_delete=models.CASCADE, related_name='followers_followings')#
-    confirmed = models.BooleanField(default=False)
-    reputation = models.FloatField(default=0) 
-
-    bio = models.TextField(blank=True, null=True)
-    photo = models.ImageField(upload_to='profiles/', blank=True, null=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.user.nickname
-'''
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)

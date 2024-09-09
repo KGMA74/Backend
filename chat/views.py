@@ -13,3 +13,18 @@ def conversations(request):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
         
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['GET'])
+def conversationsDetail(request, pk):
+    if request.method == 'GET':
+        conversation = request.user.conversations.get(pk=pk)
+        serializer = ConversationSerializer(conversation, many=False)
+        
+        messages = MessageSerializer(conversation.messages.all(), many=True)
+        
+        return Response(data={
+            'conversation': serializer.data,
+            'messages': messages.data
+            }, status=status.HTTP_200_OK)
+        
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
