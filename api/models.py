@@ -91,7 +91,7 @@ class PostCategory(models.Model):
         return self.name
     
 class Post(models.Model):
-    author = models.ForeignKey(User, related_name='posts', on_delete=models.CASCADE)
+    author = models.ForeignKey(Profile, related_name='posts', on_delete=models.CASCADE)
     parent_post = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='comments') # si non null => cest un commentaire
     category = models.ForeignKey(PostCategory, related_name='posts', on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
@@ -115,9 +115,9 @@ class VoteType(models.Model):
         return self.vote_type
 
 class Vote(models.Model):
-    author = models.ForeignKey(User, related_name='vote_author', on_delete=models.CASCADE) #
-    post = models.ForeignKey(Post, related_name='vote_post', on_delete=models.CASCADE) #
-    type = models.ForeignKey(VoteType, related_name='votes_type', on_delete=models.CASCADE) #
+    author = models.ForeignKey(Profile, related_name='votes', on_delete=models.CASCADE) #
+    post = models.ForeignKey(Post, related_name='votes', on_delete=models.CASCADE) #
+    type = models.ForeignKey(VoteType, related_name='votes', on_delete=models.CASCADE) #
 
     class Meta:
         #ajout d'une contraine unique car un user ne pouvant faire qu'un seul vote./
@@ -130,8 +130,8 @@ class Vote(models.Model):
     
 
 class Image(models.Model):
-    author = models.ForeignKey(User, related_name='image', on_delete=models.CASCADE) #
-    post = models.ForeignKey(Post, related_name='votes', on_delete=models.CASCADE) #
+    author = models.ForeignKey(Profile, related_name='images', on_delete=models.CASCADE) #
+    post = models.ForeignKey(Post, related_name='images', on_delete=models.CASCADE) #
         
     url = models.ImageField(upload_to='Images/', blank=True, null=True)
     

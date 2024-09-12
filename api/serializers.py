@@ -4,7 +4,7 @@ from api.models import User, Profile, PostCategory, Post, Tag, Vote, VoteType
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        exclude = ('password',)
     
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
@@ -25,7 +25,7 @@ class TagSerializer(serializers.ModelSerializer):
         
 class PostSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
-    author = UserSerializer(many=False, read_only=True)
+    author = ProfileSerializer(many=False, read_only=True)
     class Meta:
         model = Post
         fields = '__all__'
