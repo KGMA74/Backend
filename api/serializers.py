@@ -7,6 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
 class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(many=False, read_only=True)
     class Meta:
         model = Profile
         fields = '__all__'
@@ -16,14 +17,17 @@ class PostCategorySerializer(serializers.ModelSerializer):
         model = PostCategory
         fields = '__all__'
     
-class PostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = '__all__'
     
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
+        fields = '__all__'
+        
+class PostSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many=True, read_only=True)
+    author = UserSerializer(many=False, read_only=True)
+    class Meta:
+        model = Post
         fields = '__all__'
 
 class VoteSerializer(serializers.ModelSerializer):

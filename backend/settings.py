@@ -193,6 +193,10 @@ DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,  # Pour demander la confirmation du mot de passe à la création de l'utilisateur
     'PASSWORD_RESET_CONFIRM_RETYPE': True,  # Pour demander la confirmation du nouveau mot de passe à la réinitialisation
     'TOKEN_MODEL': None,  # Utilise JWT au lieu des tokens par défaut de Djoser
+    'PERMISSIONS': {
+        'user':  ["rest_framework.permissions.AllowAny"],
+        'user_list':  ["rest_framework.permissions.AllowAny"]
+    }
 }
 
 

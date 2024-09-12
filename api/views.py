@@ -362,8 +362,6 @@ def search(request):
     
     return Response({'error': 'No query provided'}, status=400)
 
-
-
 # -------------------------profile
 class updateProfile(generics.UpdateAPIView):
     queryset = Profile.objects.all()
@@ -371,7 +369,6 @@ class updateProfile(generics.UpdateAPIView):
     permission_classes = [AllowAny]
     
 class profilesList(generics.ListAPIView):
-    lookup_field = 'user'
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [AllowAny]
@@ -385,4 +382,6 @@ class retrieveProfile(generics.RetrieveAPIView):
     lookup_field = 'user'
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    
+
     
