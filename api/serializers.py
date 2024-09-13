@@ -29,6 +29,12 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = '__all__'
+        
+class PostCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['author', 'title', 'details', 'tags', 'category']
+
 
 class VoteSerializer(serializers.ModelSerializer):
     class Meta:

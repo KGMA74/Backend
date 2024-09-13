@@ -7,7 +7,7 @@ from api.models import (
 )
 from api.serializers import (
     UserSerializer, ProfileSerializer, 
-    PostCategorySerializer, PostSerializer, 
+    PostCategorySerializer, PostSerializer, PostCreateSerializer, 
     TagSerializer, VoteSerializer, VoteTypeSerializer
 )
 from rest_framework import generics, status
@@ -175,6 +175,7 @@ class UserRegister(generics.CreateAPIView):
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
     
 class UserRetrieve(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -209,7 +210,9 @@ def PostList_byUser(request, id):
 
 class createPost(generics.CreateAPIView):
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
+    serializer_class = PostCreateSerializer
+    permission_classes = [AllowAny]
+    
 
 #----------------------------------------vote
 @api_view(['GET'])
