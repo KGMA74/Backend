@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import User, Profile, PostCategory, Post, Tag, Vote, VoteType
+from api.models import User, Profile, PostCategory, Post, Tag, Vote, VoteType, Education, Experience
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
     
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False, read_only=True)
+    #skills = TagSerializer(many=True, read_only=True)
     class Meta:
         model = Profile
         fields = '__all__'
@@ -33,7 +34,7 @@ class PostSerializer(serializers.ModelSerializer):
 class PostCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['author', 'title', 'details', 'tags', 'category']
+        fields = '__all__'
 
 
 class VoteSerializer(serializers.ModelSerializer):
@@ -44,4 +45,14 @@ class VoteSerializer(serializers.ModelSerializer):
 class VoteTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoteType
+        fields = '__all__'
+
+class ExperienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Experience
+        fields = '__all__'
+        
+class EducationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Education
         fields = '__all__'

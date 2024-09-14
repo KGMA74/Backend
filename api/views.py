@@ -132,7 +132,6 @@ class CustomTokenVerifyView(TokenVerifyView):
 
     
 @api_view(['POST'])
-@permission_classes([AllowAny])
 def LogoutView(request):
     if request.method == 'POST':
         
@@ -211,7 +210,6 @@ def PostList_byUser(request, id):
 class createPost(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostCreateSerializer
-    permission_classes = [AllowAny]
     
 
 #----------------------------------------vote
@@ -248,30 +246,25 @@ def VoteList_byVoteType(request, vote_type):
 class VoteList(generics.ListAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
-    permission_classes = [AllowAny]
     
 class VoteTypeRetrieve(generics.RetrieveAPIView):
     queryset = VoteType.objects.all()
     serializer_class = VoteTypeSerializer
     lookup_field = 'id'
-    permission_classes = [AllowAny]
     
 class vote(generics.CreateAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
-    permission_classes = [AllowAny]
     
 class updateVote(generics.UpdateAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
     lookup_field = 'id'
-    permission_classes = [AllowAny]
     
 class unvote(generics.DestroyAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
     lookup_field = 'id'
-    permission_classes = [AllowAny]
     
 #le vote d'un utilisareur dans un post
 @api_view(['GET'])
@@ -288,7 +281,6 @@ def vote_of_user_in_post(request, postId, userId):
 
 #nombre de commentaire d un post (qui son egalement des post de categories commentaire)
 @api_view(['GET'])
-@permission_classes([AllowAny])
 def comments_by_post_number(request, postId):
     #nombre de commentaire dun post
     if request.method == 'GET':
@@ -300,7 +292,6 @@ def comments_by_post_number(request, postId):
     
 #-----------------*--les commentaires
 @api_view(['GET'])
-@permission_classes([AllowAny])
 def comments_by_post(request, postId):
     if request.method == 'GET':
         try:
@@ -315,12 +306,11 @@ def comments_by_post(request, postId):
 class tagsList(generics.ListAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [AllowAny]
 
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])
+
 def tags_by_post(request, postId):
     #recuperer les tags dun post des donnes
     if request.method == 'GET':
@@ -337,7 +327,6 @@ def tags_by_post(request, postId):
 class categoriesList(generics.ListAPIView):
     queryset = PostCategory.objects.all()
     serializer_class = PostCategorySerializer
-    permission_classes = [AllowAny]
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -369,17 +358,15 @@ def search(request):
 class updateProfile(generics.UpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [AllowAny]
     
 class profilesList(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [AllowAny]
+
     
 class createProfile(generics.CreateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [AllowAny]
     
 class retrieveProfile(generics.RetrieveAPIView):
     lookup_field = 'user'

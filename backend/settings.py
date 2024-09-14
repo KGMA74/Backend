@@ -169,7 +169,7 @@ MEDIA_ROOT = BASE_DIR / MEDIA_URL[:-1]
 
 #----------------------
 AUTH_COOKIE = 'access'
-AUTH_COOKIE_ACCESS_MAX_AGE = 60 * 10 #10mn
+AUTH_COOKIE_ACCESS_MAX_AGE = 60 * 1 #10mn
 AUTH_COOKIE_REFRESH_MAX_AGE = 60 * 60 * 24 #1jour
 AUTH_COOKIE_SECURE = getenv('AUTH_COOKIE_SECURE', 'True') == 'True'
 AUTH_COOKIE_HTTP_ONLY = True
@@ -203,7 +203,7 @@ DJOSER = {
 SIMPLE_JWT = {
     # Durée de vie des tokens d'accès et de rafraîchissement
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
 
     # Gestion des tokens de rafraîchissement
     'ROTATE_REFRESH_TOKENS': True,
@@ -241,7 +241,7 @@ SIMPLE_JWT = {
 
     # Configuration des tokens de type "sliding"
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=10),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 
     # Sérialiseurs pour les opérations sur les tokens

@@ -16,6 +16,7 @@ class CustomJWTAuthentication(JWTAuthentication):
             if header is None:
                 #on recuperer le token à partir du  cookie access
                 raw_token = request.COOKIES.get(settings.AUTH_COOKIE)
+                print('--------------------', raw_token)
             else:
                 raw_token = self.get_raw_token(header)
                 
