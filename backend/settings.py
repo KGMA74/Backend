@@ -116,7 +116,7 @@ DATABASES = {
         'USER': getenv('DB_USER'),
         'PASSWORD': getenv('DB_PASSWORD'),
         'HOST': getenv('DB_HOST', default='localhost'),  # ou l'adresse de votre serveur PostgreSQL
-        'PORT': getenv('DB_HOST', default='5432'),           # par défaut, le port est 5432
+        'PORT': getenv('DB_PORT', default='5432'),           # par défaut, le port est 5432
     }
 }
 
@@ -271,5 +271,5 @@ AUTH_USER_MODEL = 'api.User' #cuz we use custom user
 SITE_NAME = 'EsiOverflow'
 DOMAIN = getenv('DOMAIN')
 CORS_ALLOW_CREDENTIALS = True
-#CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
+CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOWED_ORIGINS = getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://localhost:3000').split(',')
