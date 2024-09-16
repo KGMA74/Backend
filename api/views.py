@@ -3,12 +3,12 @@ from django.conf import settings
 from django.db.models import Q
 from api.models import (
     User, Profile, PostCategory, Post, 
-    Tag, Vote, VoteType
+    Tag, Vote, VoteType, Education, Experience
 )
 from api.serializers import (
     UserSerializer, ProfileSerializer, 
     PostCategorySerializer, PostSerializer, PostCreateSerializer, 
-    TagSerializer, VoteSerializer, VoteTypeSerializer
+    TagSerializer, VoteSerializer, VoteTypeSerializer, EducationSerializer, ExperienceSerializer
 )
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
@@ -310,7 +310,6 @@ class tagsList(generics.ListAPIView):
 
 
 @api_view(['GET'])
-
 def tags_by_post(request, postId):
     #recuperer les tags dun post des donnes
     if request.method == 'GET':
@@ -337,6 +336,11 @@ def search(request):
         # Rechercher dans les utilisateurs
         users = User.objects.filter(Q(nickname__icontains=query) | Q(email__icontains=query))
         user_serializer = UserSerializer(users, many=True)
+        
+                
+        # Récupérer les profils associés aux utilisateurs
+        profiles = Profile.objects.filter(user__in=users)
+        profile_serializer = ProfileSerializer(profiles, many=True)
 
         # Rechercher dans les tags
         tags = Tag.objects.filter(name__icontains=query)
@@ -347,7 +351,7 @@ def search(request):
         post_serializer = PostSerializer(posts, many=True)
 
         return Response({
-            'users': user_serializer.data,
+            'profiles': profile_serializer.data,
             'tags': tag_serializer.data,
             'posts': post_serializer.data,
         })
@@ -373,5 +377,88 @@ class retrieveProfile(generics.RetrieveAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     
+#----------------------education
 
+@api_view(['GET'])
+def userEducation(request, userId):
+    if request.method == 'GET':
+        try:
+            educations = Profile.objects.get(pk=userId).educations.all()
+        except:
+            return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = EducationSerializer(educations, many=True)
+        print('*************************', serializer.data)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     
+    return Response('', status=status.HTTP_400_BAD_REQUEST)
+
+class EducationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Education.objects.all()
+    serializer_class = EducationSerializer
+    lookup_field = 'pk'
+    
+#---------------------- experience
+@api_view(['GET'])
+def userExperience(request, userId):
+    if request.method == 'GET':
+        try:
+            experiences = Profile.objects.get(pk=userId).experiences.all()
+        except:
+            return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ExperienceSerializer(experiences, many=True)
+        
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    return Response('', status=status.HTTP_400_BAD_REQUEST)
+
+
+class ExperienceDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Experience.objects.all()
+    serializer_class = ExperienceSerializer
+    lookup_field = 'pk'
+    
+#----------------skills
+
+@api_view(['GET'])
+def userSkills(request, userId):
+    if request.method == 'GET':
+        try:
+           
+            skills = Profile.objects.get(pk=userId).skills.all()
+            serializer = TagSerializer(skills, many=True)
+            print('*************************', serializer.data)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        except:
+            print('*************************', serializer.data)
+            return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    return Response('', status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def addSkills(request, userId):
+    try:
+        profile = Profile.objects.get(pk=userId)
+    except Profile.DoesNotExist:
+        return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    skill_ids = request.data.get('skills', [])
+    skills = Tag.objects.filter(id__in=skill_ids)
+    profile.skills.add(*skills)
+    
+    serializer = TagSerializer(skills, many=True)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+def removeSkills(request, userId):
+    try:
+        profile = Profile.objects.get(pk=userId)
+    except Profile.DoesNotExist:
+        return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    skill_ids = request.data.get('skills', [])
+    skills = Tag.objects.filter(id__in=skill_ids)
+    profile.skills.remove(*skills)
+    
+    return Response({'status': 'Skills removed'}, status=status.HTTP_200_OK)

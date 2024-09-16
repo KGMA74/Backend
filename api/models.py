@@ -59,10 +59,20 @@ class User(AbstractBaseUser):
         return True
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=255, primary_key=True)
+    description = models.TextField()
+    
+    def __str__(self):
+        return self.name
+    
+    def count_posts(self):
+        return self.posts.count()
+    
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
     
-    #skills = models.ManyToManyField(Tag, related_name='profiles', blank=True)
+    skills = models.ManyToManyField(Tag, related_name='profiles', blank=True)
     
     following = models.ManyToManyField('self', symmetrical=False, related_name='follower', blank=True) # symetrical a false car A suit B n implique pas B suit A
     confirmed = models.BooleanField(default=False)
@@ -75,15 +85,7 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user}'
 
-class Tag(models.Model):
-    name = models.CharField(max_length=255, primary_key=True)
-    description = models.TextField()
-    
-    def __str__(self):
-        return self.name
-    
-    def count_posts(self):
-        return self.posts.count()
+
 
 class PostCategory(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
@@ -131,6 +133,7 @@ class Vote(models.Model):
         return f"{self.author} voted {self.type.vote_type} on {self.post.title}"
     
 
+
 class Experience(models.Model):
     name = models.CharField(max_length=50)
     detail = models.TextField()
@@ -143,7 +146,6 @@ class Education(models.Model):
     detail = models.TextField()
     graduation_date = models.DateField(null=True, blank=True) 
     profile = models.ForeignKey(Profile, related_name='educations', on_delete=models.CASCADE)
-
     
 
 class Image(models.Model):
