@@ -295,7 +295,7 @@ def comments_by_post_number(request, postId):
 def comments_by_post(request, postId):
     if request.method == 'GET':
         try:
-            comments = Post.objects.filter(parent_post_id=postId)
+            comments = Post.objects.get(pk=postId).comments.all()
             serializer = PostSerializer(comments, many=True)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
