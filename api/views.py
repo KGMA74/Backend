@@ -57,6 +57,7 @@ class CustomProviderAuthView(ProviderAuthView):
             )
 
         return response
+    
 #customisation de la class TokenObtainPairView pour que les tokens passes par les cookies et non les headers donc plus securise
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -194,7 +195,7 @@ class PostList(generics.ListAPIView):
 class PostRetrieve(generics.RetrieveAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    lookup_field = 'id'
+    lookup_field = 'pk'
 
 @api_view(['GET'])
 def PostList_byUser(request, id):
