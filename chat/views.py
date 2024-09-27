@@ -37,8 +37,17 @@ def createConversation(request):
     if request.method == 'POST':
         serializer = createConversationSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(users=[request.user])
+            serializer.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['DELETE'])
+def deleteConversation(request, pk):
+    if request.method == 'DELETE':
+        conversation = request.user.conversations.get(pk=pk)
+        conversation.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
         
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)

@@ -59,11 +59,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def save_message(self, conversation_id, body, sent_to_id):
         print('scope', self.scope)
+        
         user = self.scope['user']  # Récupérer l'utilisateur connecté
-    
+                
         Message.objects.create(
             conversation_id=conversation_id, 
             body=body, 
             sent_to_id=sent_to_id, 
-            author=user
+            author=user or ''
         )
